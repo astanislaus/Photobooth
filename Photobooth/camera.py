@@ -25,7 +25,7 @@ SmallMessage = ""  # SmallMessage is a lower banner message
 TotalImageCount = 0  # Counter for Display and to monitor paper usage
 PhotosPerCart = 30  # Selphy takes 16 sheets per tray
 imagecounter = 0
-imagefolder = 'Photos'
+imagefolder = '~/Pictures/Photos'
 templatePath = os.path.join('Photos', 'Template', "template.png") #Path of template image
 ImageShowed = False
 Printing = False
@@ -283,7 +283,7 @@ def CapturePicture():
     gphoto2CmdLine = ["gphoto2", "--capture-image-and-download", "--filename", filename]
     print(gphoto2CmdLine)
     child = subprocess.Popen(gphoto2CmdLine)
-    time.sleep(3)
+    time.sleep(2)
     Message = "OK, Relax while I prepare the photo.."
     UpdateDisplay()   
     
