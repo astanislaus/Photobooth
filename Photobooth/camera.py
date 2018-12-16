@@ -291,7 +291,7 @@ def CapturePicture():
 
     print(b)
 
-    child = subprocess.Popen([gphoto2CmdLine])
+    child = subprocess.Popen(gphoto2CmdLine,'r',1)
     time.sleep(3)
     Message = "OK, Relax while I prepare the photo.."
     UpdateDisplay()   
