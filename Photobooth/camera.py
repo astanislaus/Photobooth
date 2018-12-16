@@ -108,10 +108,11 @@ def InitFolder():
  
     Message = 'Folder Check...'
     UpdateDisplay()
-    Message = ''
-    print(Message)
+    #Message = ''
+    print(Message + imagefolder)
     #check image folder existing, create if not exists
-    if not os.path.isdir(imagefolder):	
+    if not os.path.isdir(imagefolder):
+        print("creating folder")
         os.makedirs(imagefolder)	
             
     imagefolder2 = os.path.join(imagefolder, 'images')
