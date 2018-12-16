@@ -4,6 +4,7 @@ import os
 import PIL.Image
 import cups
 import pifaceio
+import subprocess
 
 from threading import Thread
 from pygame.locals import *
@@ -281,19 +282,16 @@ def CapturePicture():
     print(filename)
     gphoto2CmdLine = "gphoto2 --capture-image-and-download --filename " + filename
     print(gphoto2CmdLine)
-#                camera.capture(filename, resize=(IMAGE_WIDTH, IMAGE_HEIGHT))
-#                camera.stop_preview()
-#                 print("SNAP")
 
-    gpout = subprocess.check_output(gphoto2CmdLine, stderr=subprocess.STDOUT, shell=True)
-#    print(gpout)
-#    print("GPHOTO2 is done")
 
+    child = subprocess.Popen([gphoto2CmdLine])
+    time.sleep(3)
+    Message = "OK, Relax while I prepare the photo.."
+    UpdateDisplay()   
+    
+    result = child.wait()  
+    
     if "ERROR" not in gpout: 
-#                 snap += 1
-#                 GPIO.output(POSE_LED, False)
-#                 time.sleep(0.5)
-#                 print("please wait while your photos print...")
         ShowPicture(filename, 2)
         ImageShowed = False
     return filename
