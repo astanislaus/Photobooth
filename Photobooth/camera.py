@@ -284,12 +284,7 @@ def CapturePicture():
     print(gphoto2CmdLine)
 
 
-    # using command mkdir
-    a = 'mkdir nwdir'
 
-    b = os.popen(a,'r',1)
-
-    print(b)
 
     child = subprocess.Popen(gphoto2CmdLine,'r',1)
     time.sleep(3)
