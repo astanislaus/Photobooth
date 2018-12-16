@@ -289,7 +289,7 @@ def CapturePicture():
     
     result = child.wait()  
     
-    if "ERROR" not in gpout: 
+    if "ERROR" not in result: 
         ShowPicture(filename, 2)
         ImageShowed = False
     return filename
