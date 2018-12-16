@@ -282,7 +282,7 @@ def CapturePicture():
     print(filename)
     gphoto2CmdLine = ["gphoto2", "--capture-image-and-download", "--filename", filename]
     print(gphoto2CmdLine)
-    child = subprocess.Popen(ggphoto2CmdLine)
+    child = subprocess.Popen(gphoto2CmdLine)
     time.sleep(3)
     Message = "OK, Relax while I prepare the photo.."
     UpdateDisplay()   
