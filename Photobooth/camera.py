@@ -280,14 +280,9 @@ def CapturePicture():
     ts = time.time()
     filename = os.path.join(imagefolder, 'images', str(imagecounter)+"_"+str(ts) + '.jpg')
     print(filename)
-    gphoto2CmdLine = "gphoto2 --capture-image-and-download --filename " + filename
+    gphoto2CmdLine = ["gphoto2", "--capture-image-and-download", "--filename ", filename]
     print(gphoto2CmdLine)
-
-
-
-    testline = "gphoto2 --capture-image-and-download --filename photo.jpg"
-
-    child = subprocess.Popen([testline])
+    child = subprocess.Popen(ggphoto2CmdLine)
     time.sleep(3)
     Message = "OK, Relax while I prepare the photo.."
     UpdateDisplay()   
