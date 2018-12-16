@@ -492,7 +492,7 @@ def main(threadName, *args):
         WaitForEvent()
         time.sleep(1)
         TakePictures()
-
+        #test
 
 # launch the main thread
 Thread(target=main, args=('Main', 1)).start()
