@@ -289,7 +289,7 @@ def CapturePicture():
     
     result = child.wait()  
     print(result)
-    if result == 1: 
+    if result == 0: 
         ShowPicture(filename, 2)
         ImageShowed = False
     return filename
