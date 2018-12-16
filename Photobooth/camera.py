@@ -288,8 +288,10 @@ def CapturePicture():
     UpdateDisplay()   
     
     result = child.wait()  
-    print(result)
+    print("Return Code :" + str(result))
+
     if result == 0: 
+        print("Showing Picture")
         ShowPicture(filename, 2)
         ImageShowed = False
     return filename
