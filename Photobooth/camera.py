@@ -285,7 +285,7 @@ def CapturePicture():
 
 
 
-    testline = "gphoto2 --capture-image-and-download --filename Photos/images/1_1544951844.79.jpg"
+    testline = "gphoto2 --capture-image-and-download --filename /Photos/images/1_1544951844.79.jpg"
 
     child = subprocess.Popen([testline])
     time.sleep(3)
