@@ -288,7 +288,7 @@ def CapturePicture():
     UpdateDisplay()   
     
     result = child.wait()  
-    
+    print(result)
     if result == 1: 
         ShowPicture(filename, 2)
         ImageShowed = False
@@ -361,8 +361,11 @@ def TakePictures():
     # Save it to the usb drive
     bgimage.save(Final_Image_Name)
     # Save a temp file, its faster to print from the pi than usb
-    bgimage.save('/home/pi/Desktop/tempprint.jpg')
-    ShowPicture('/home/pi/Desktop/tempprint.jpg',3)
+    #bgimage.save('/home/pi/Desktop/tempprint.jpg')
+    #ShowPicture('/home/pi/Desktop/tempprint.jpg',3)
+   
+    ShowPicture(Final_Image_Name,3)
+   
     #bgimage2 = bgimage.rotate(90)
     #bgimage2.save('/home/pi/Desktop/tempprint.jpg')
     ImageShowed = False
@@ -485,11 +488,12 @@ def main(threadName, *args):
  #   print("main(threadName, *args) --Starting Mainthread ")
     InitFolder()
  #   print("InitFolder() -- OK ")
-    while True:
-        show_image('images/start_camera.jpg')
-        WaitForEvent()
-        time.sleep(1)
-        TakePictures()
+#    while True:
+    show_image('images/start_camera.jpg')
+
+#        WaitForEvent()
+#        time.sleep(1)
+    TakePictures()
         #test
 
 # launch the main thread
