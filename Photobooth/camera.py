@@ -4,15 +4,13 @@ import os
 import PIL.Image
 import cups
 import pifaceio
-import subprocess
 
 from threading import Thread
 from pygame.locals import *
 from time import sleep
 from PIL import Image, ImageDraw
 
-
-import RPi.GPIO as GPIO, time, os, subprocess
+import RPi.GPIO as GPIO, time, os, subprocess,shlex
 
  
 # initialise global variables
@@ -25,7 +23,7 @@ SmallMessage = ""  # SmallMessage is a lower banner message
 TotalImageCount = 0  # Counter for Display and to monitor paper usage
 PhotosPerCart = 30  # Selphy takes 16 sheets per tray
 imagecounter = 0
-imagefolder = '/home/pi/Pictures/Photos'
+imagefolder = 'Photos'
 templatePath = os.path.join('Photos', 'Template', "template.png") #Path of template image
 ImageShowed = False
 Printing = False
@@ -62,7 +60,7 @@ transfrom_y = infoObject.current_h # how high to scale the jpg when replaying
 
 
 # A function to handle keyboard/mouse/device input events
-print("# A function to handle keyboard/mouse/device input events -- coommented out OK")
+print("# A function to handle keyboard/mouse/device input events -- commented out OK")
 def input(events):
     for event in events:  # Hit the ESC key to quit the slideshow.
         if (event.type == QUIT or
@@ -108,11 +106,10 @@ def InitFolder():
  
     Message = 'Folder Check...'
     UpdateDisplay()
-    #Message = ''
-    print(Message + imagefolder)
+    Message = ''
+    print(Message)
     #check image folder existing, create if not exists
-    if not os.path.isdir(imagefolder):
-        print("creating folder")
+    if not os.path.isdir(imagefolder):	
         os.makedirs(imagefolder)	
             
     imagefolder2 = os.path.join(imagefolder, 'images')
@@ -263,6 +260,27 @@ def CapturePicture():
 #    camera.start_preview()
     BackgroundColor = "black"
 
+
+    # Construct Unique Filename using time and image number
+    imagecounter = imagecounter + 1
+    ts = time.time()
+    filename = os.path.join(imagefolder, 'images', str(imagecounter)+"_"+str(ts) + '.jpg')
+    print(filename)
+    gphoto2CmdLine = "gphoto2 --capture-image-and-download --filename " + filename
+    print(gphoto2CmdLine)
+    args = shlex.split(gphoto2CmdLine)
+    print(args)
+
+    #these links are helpful for understanding the details of Popen (process open)
+    #https://docs.python.org/2/library/subprocess.html#subprocess.Popen
+    #https://www.programcreek.com/python/example/50/subprocess.Popen
+
+    gpout = subprocess.Popen(args)
+    print(gpout)
+    print("Starting Camera Capture...")
+
+    # Count down from 3 to 1 before  picture is actually taken
+    # 3s is OK for Nikon Coolpix but will be different for other cameras
     for x in range(3, -1, -1):
         if x == 0:                        
                 Numeral = ""
@@ -273,28 +291,30 @@ def CapturePicture():
         UpdateDisplay()
         time.sleep(1)
 
-    BackgroundColor = ""
-    Numeral = ""
-    Message = "Big Smiles Now"
+   # time.sleep(3)
+    Message = "Great Shot !"
+    print(Message)
     UpdateDisplay()
-    imagecounter = imagecounter + 1
-    ts = time.time()
-    filename = os.path.join(imagefolder, 'images', str(imagecounter)+"_"+str(ts) + '.jpg')
-    print(filename)
-    gphoto2CmdLine = ["gphoto2", "--capture-image-and-download", "--filename", filename]
-    print(gphoto2CmdLine)
-    child = subprocess.Popen(gphoto2CmdLine)
-    time.sleep(2)
-    Message = "OK, Relax while I prepare the photo.."
-    UpdateDisplay()   
-    
-    result = child.wait()  
-    print("Return Code :" + str(result))
+    time.sleep(1)
+    Message = "Now relax While I fetch the photo"
+    print(Message)
+    UpdateDisplay()
+    time.sleep(5)
+    Message = "Nearly there..."
+    print(Message)
+    UpdateDisplay()
 
-    if result == 0: 
-        print("Showing Picture")
-        ShowPicture(filename, 2)
-        ImageShowed = False
+    gpout1=gpout.wait()
+    print(gpout1)
+    print("GPHOTO2 is done")
+
+#    if "ERROR" not in gpout1: 
+#                 snap += 1
+#                 GPIO.output(POSE_LED, False)
+#                 time.sleep(0.5)
+#                 print("please wait while your photos print...")
+    ShowPicture(filename, 2)
+    ImageShowed = False
     return filename
 
 def TakePictures():
@@ -327,7 +347,7 @@ def TakePictures():
     UpdateDisplay()
 
 
-    basewidth = 575
+    basewidth = 570 #575
 
     #image1 = PIL.Image.open(filename1)
     image1 = Image.open(filename1)
@@ -354,9 +374,9 @@ def TakePictures():
     
     TotalImageCount = TotalImageCount + 1
 
-    bgimage.paste(image1, (625, 0))     #bgimage.paste(image1, (625, 30))
-    bgimage.paste(image2, (625, 411))   #bgimage.paste(image2, (625, 410))
-    bgimage.paste(image3, (0, 411))     #bgimage.paste(image3, (55, 410))
+    bgimage.paste(image1, (600, 0))     #bgimage.paste(image1, (625, 30))
+    bgimage.paste(image2, (600, 400))   #bgimage.paste(image2, (625, 405))
+    bgimage.paste(image3, (30, 400))     #bgimage.paste(image3, (55, 405))
     # Create the final filename
     ts = time.time()
     Final_Image_Name = os.path.join(imagefolder, "Final_" + str(TotalImageCount)+"_"+str(ts) + ".jpg")
@@ -364,11 +384,8 @@ def TakePictures():
     # Save it to the usb drive
     bgimage.save(Final_Image_Name)
     # Save a temp file, its faster to print from the pi than usb
-    #bgimage.save('/home/pi/Desktop/tempprint.jpg')
-    #ShowPicture('/home/pi/Desktop/tempprint.jpg',3)
-   
-    ShowPicture(Final_Image_Name,3)
-   
+    bgimage.save('/home/pi/Desktop/tempprint.jpg')
+    ShowPicture('/home/pi/Desktop/tempprint.jpg',3)
     #bgimage2 = bgimage.rotate(90)
     #bgimage2.save('/home/pi/Desktop/tempprint.jpg')
     ImageShowed = False
@@ -390,8 +407,14 @@ def TakePictures():
                             # get a list of printers
                             printers = conn.getPrinters()
                             # select printer 0
+                            printer_name = printers.keys()[0]
+                            print(printer_name)
                             printer_name = printers.keys()[1]
-                            Message = "Let's Print That Masterpiece!"  #Using Printer name  : " + printer_name
+                            print(printer_name)
+                            printer_name = printers.keys()[2]
+                            print(printer_name)
+                            printer_name = "Photos_10cm_x_15cm"
+			    Message = "Let's Print That Masterpiece!"  #Using Printer name  : " + printer_name
                             UpdateDisplay()
                             time.sleep(0.1)
                             # print the buffer file
@@ -491,15 +514,13 @@ def main(threadName, *args):
  #   print("main(threadName, *args) --Starting Mainthread ")
     InitFolder()
  #   print("InitFolder() -- OK ")
-#    while True:
-    show_image('images/start_camera.jpg')
+    while True:
+        show_image('images/start_camera.jpg')
+        WaitForEvent()
+        time.sleep(1)
+        TakePictures()
 
-#        WaitForEvent()
-#        time.sleep(1)
-    TakePictures()
-        #test
 
 # launch the main thread
 Thread(target=main, args=('Main', 1)).start()
-
 
